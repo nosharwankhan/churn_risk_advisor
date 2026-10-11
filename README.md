@@ -4,15 +4,15 @@ A web app that scores telecom customer churn risk, shows which changes would
 lower it, and scores a whole customer file at once. Built as Project 1 of
 Introduction to Applied AI (Department of Electronics).
 
-**Live app:** >>> PASTE YOUR STREAMLIT URL HERE after deployment
+**Live app:** >>> https://churnriskadvisor-nosharwan.streamlit.app/
 
 ## Screenshots
 
 ### One customer
-![One customer](screenshot1.png)
+![One customer](customerss.png)
 
 ### Batch scoring
-![Batch scoring](screenshot2.png)
+![Batch scoring](batchss.png)
 
 ## Model card: Churn Risk Advisor v1.0
 
