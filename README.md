@@ -173,3 +173,22 @@ requires Python 3.12 or newer.
 The riskiest named segment is **At-Risk High-Spenders** (churn 43.1%). Action:
 offer a contract lock-in discount (15% off for 12 months) and a technical
 onboarding check.
+## Check your understanding
+
+1. **Why does `get_dummies(drop_first=True)` break predictions when scoring a single customer?**
+   `drop_first=True` drops the first category it finds in the data. With one row, that first category is the customer's own value, so all columns for that feature become 0, and after `reindex` the model reads this as the baseline category. In my test, a Two year customer scored 0.136 instead of 0.012, with no error raised.
+
+2. **What does the parity test compare, and why must it cover every training row rather than a few?**
+   It compares the probabilities from the notebook's evaluation path (`X[cols]`) with the app's input path (`prepare_input` on raw data), and they must match. Encoding bugs hide in rare categories, so checking 5 rows can pass while 50 customers are wrong; mine matched on all 7,043 rows (largest difference 0.0).
+
+3. **Should the model be loaded with `st.cache_resource` or `st.cache_data`? Why?**
+   `st.cache_resource`, because the model is a shared object that should be loaded once per server and reused by every visitor. `st.cache_data` would return a fresh copy on each rerun, which is meant for dataframes and computed results, not models.
+
+4. **Why does the app derive `TotalCharges` instead of asking the user to type it?**
+   `TotalCharges` is roughly tenure times monthly charges, so asking for it lets users enter impossible combinations the model never saw. Its answers for those customers would be meaningless, so the app prevents them at the form.
+
+5. **Why must `requirements.txt` pin the exact scikit-learn version used in training?**
+   The saved model stores library objects by their internal structure, so loading it needs the same version. A different version may warn, fail, or quietly behave differently. The same applies to xgboost, which is why I pinned 3.4.1 as well.
+
+6. **The what-if shows a two-year contract lowers risk from 0.79 to 0.27. Would offering one make the customer stay? How could a company find out?**
+   Not necessarily: the model shows an association, and customers who choose long contracts may already be more loyal for other reasons. The company can run a randomized test, offering a contract to a random half of at-risk customers and comparing how many stay in each group.
